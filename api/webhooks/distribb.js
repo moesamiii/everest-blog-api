@@ -1,10 +1,14 @@
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
   if (req.method === "OPTIONS") return res.status(200).end();
+
   try {
     const article = req.body;
+    console.log("Distribb payload:", JSON.stringify(article));
+
     const response = await fetch(
       "https://bqbstpmltgccrhmtjufk.supabase.co/rest/v1/articles",
       {
@@ -16,17 +20,19 @@ export default async function handler(req, res) {
           Prefer: "return=minimal",
         },
         body: JSON.stringify({
-          title: article.title,
-          content: article.content,
-          slug: article.slug,
-          featured_image: article.featured_image || null,
+          title: article.title || article.Title || article.name || null,
+          content: article.content || article.Content || article.body || null,
+          slug: article.slug || article.Slug || null,
+          featured_image: article.featured_image || article.image || article.featuredImage || null,
         }),
       }
     );
+
     if (!response.ok) {
       const err = await response.text();
       return res.status(500).json({ error: err });
     }
+
     return res.status(200).json({ success: true });
   } catch (error) {
     return res.status(500).json({ error: error.message });
