@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/webhooks/distribb", "destination": "/api/webhooks/distribb" },
+    { "source": "/api/articles", "destination": "/api/articles" }
+  ]
+}
